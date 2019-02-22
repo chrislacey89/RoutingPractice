@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import axios from "../../../axios";
+import { Route } from "react-router-dom";
 
 import Post from "../../../components/Post/Post";
 import "./Posts.css";
-import { Link } from "react-router-dom";
+import FullPost from "../FullPost/FullPost";
+// import { Link } from "react-router-dom";
 
 class Posts extends Component {
   state = {
@@ -19,7 +21,7 @@ class Posts extends Component {
         const updatedPosts = posts.map(post => {
           return {
             ...post,
-            author: "Chris"
+            author: "Max"
           };
         });
         this.setState({ posts: updatedPosts });
@@ -32,32 +34,37 @@ class Posts extends Component {
   }
 
   postSelectedHandler = id => {
-    // this.setState({ selectedPostId: id });
-    // console.log(id);
-    // we can alternatively navigate programmatically instead of a link. We might use after a given operation has finished
-    this.props.history.push({ pathname: "/" + id });
-    //   this.props.history.push("/" + id );
+    // this.props.history.push({pathname: '/posts/' + id});
+    this.props.history.push("/posts/" + id);
   };
 
   render() {
     let posts = <p style={{ textAlign: "center" }}>Something went wrong!</p>;
     if (!this.state.error) {
-      //iterate through all posts received from axios GET
       posts = this.state.posts.map(post => {
         return (
-          //   <Link to={"/" + post.id} key={post.id}>
+          // <Link to={'/posts/' + post.id} key={post.id}>
           <Post
             key={post.id}
             title={post.title}
             author={post.author}
             clicked={() => this.postSelectedHandler(post.id)}
           />
-          //   </Link>
+          // </Link>
         );
       });
     }
 
-    return <section className="Posts">{posts}</section>;
+    return (
+      <div>
+        <section className="Posts">{posts}</section>
+        <Route
+          path={this.props.match.url + "/:id"}
+          exact
+          component={FullPost}
+        />
+      </div>
+    );
   }
 }
 
